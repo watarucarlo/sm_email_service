@@ -80,7 +80,7 @@ public class EmailServiceImpl implements EmailService {
         headers.set("Authorization", "Bearer " + environment.getProperty(SiteminderEmailServiceConstant.SENDGRID_KEY_PROPERTY));
 
         HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
-        restTemplate.postForLocation(SiteminderEmailServiceConstant.SENDGRID_URI_PROPERTY, entity);
+        restTemplate.postForLocation(environment.getProperty(SiteminderEmailServiceConstant.SENDGRID_URI_PROPERTY), entity);
 
         return null;
     }
