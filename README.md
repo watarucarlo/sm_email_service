@@ -1,2 +1,2 @@
 # sm_email_service
-Email service challenge from siteminder
+Email service challenge from SiteMinder
