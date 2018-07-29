@@ -9,10 +9,8 @@ import com.au.siteminder.model.EmailResponseMother;
 import com.au.siteminder.service.EmailService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
@@ -41,12 +39,12 @@ public class EmailControllerTest {
     public void whenSuccessfulMailSent() {
         EmailResponse emailResponse = emailController.sendEmail(emailRequest);
         assertNotNull(emailResponse);
-        assertEquals(EmailResponseMother.ID, emailResponse.getId());
-        assertEquals(EmailResponseMother.MESSAGE, emailResponse.getMessage());
+        assertEquals(EmailResponseMother.STATUS, emailResponse.getStatus());
+        assertEquals(EmailResponseMother.PROVIDER, emailResponse.getProvider());
     }
 
     @Test(expected = SiteminderServicesException.class)
-    public void whenMessageSendingFailed(){
+    public void whenMessageSendingFailed() {
         when(emailService.sendEmail(emailRequest)).thenThrow(new SiteminderServicesException());
         emailController.sendEmail(emailRequest);
     }
