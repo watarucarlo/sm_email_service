@@ -1,6 +1,7 @@
 package com.au.siteminder.controller;
 
 
+import com.au.siteminder.framework.exception.SiteminderServicesException;
 import com.au.siteminder.model.EmailRequest;
 import com.au.siteminder.model.EmailResponse;
 import com.au.siteminder.service.EmailService;
