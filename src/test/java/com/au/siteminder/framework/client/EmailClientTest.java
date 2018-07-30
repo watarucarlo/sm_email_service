@@ -26,7 +26,7 @@ public class EmailClientTest {
     private SendGridEmailHandler sendGridEmailHandler;
 
     @InjectMocks
-    private EmailClient emailClient;
+    private EmailClient emailClient = new EmailClient();
 
     private EmailRequest emailRequest;
 

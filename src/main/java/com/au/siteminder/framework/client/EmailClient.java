@@ -27,8 +27,8 @@ public class EmailClient {
 
     @PostConstruct
     public void init() {
-        emailHandler = sendGridEmailHandler;
-        emailHandler.setNext(mailgunEmailHandler);
+        emailHandler = mailgunEmailHandler;
+        emailHandler.setNext(sendGridEmailHandler);
     }
 
     public EmailResponse sendEmail(EmailRequest emailRequest) {
