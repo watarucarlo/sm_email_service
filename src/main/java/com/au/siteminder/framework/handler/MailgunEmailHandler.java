@@ -6,6 +6,8 @@ import com.au.siteminder.model.EmailRequest;
 import com.au.siteminder.model.EmailResponse;
 import com.au.siteminder.model.common.StatusEnum;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -21,6 +23,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class MailgunEmailHandler extends EmailHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(MailgunEmailHandler.class);
+
     @Autowired
     private EnvironmentProperty environmentProperty;
 
@@ -34,6 +38,7 @@ public class MailgunEmailHandler extends EmailHandler {
             return sendMailViaMailgun(emailRequest);
         } catch (Exception e) {
             if (next == null) {
+                log.error("Email providers are not available");
                 throw new SiteminderServicesException("Email providers not available");
             }
             return next.sendEmail(emailRequest);
@@ -43,7 +48,14 @@ public class MailgunEmailHandler extends EmailHandler {
     private EmailResponse sendMailViaMailgun(EmailRequest emailRequest) {
         restTemplate = getRestTemplate();
         HttpEntity<MultiValueMap<String, String>> request = createHttpRequest(emailRequest);
-        restTemplate.postForLocation(environmentProperty.getMailgunURI(), request);
+        log.info("Sending email via mailgun...");
+        try {
+            restTemplate.postForLocation(environmentProperty.getMailgunURI(), request);
+        } catch (Exception e) {
+            log.error("Failed to send email via mailgun...", e);
+            throw new SiteminderServicesException("Failed to send email via mailgun...", e);
+        }
+        log.info("Successfully sent email via mailgun...");
         return createResponse();
     }
 
