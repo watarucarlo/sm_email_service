@@ -6,22 +6,28 @@ import com.au.siteminder.model.EmailRequest;
 import com.au.siteminder.model.EmailResponse;
 import com.au.siteminder.model.common.StatusEnum;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class MailgunEmailHandler extends EmailHandler {
 
-    public MailgunEmailHandler(EnvironmentProperty environmentProperty, RestTemplateBuilder restTemplateBuilder) {
-        this.environmentProperty = environmentProperty;
-        this.restTemplateBuilder = restTemplateBuilder;
-    }
+    @Autowired
+    private EnvironmentProperty environmentProperty;
+
+    @Autowired
+    private RestTemplateBuilder restTemplateBuilder;
+
+    private RestTemplate restTemplate;
 
     public EmailResponse sendEmail(EmailRequest emailRequest) {
         try {
@@ -35,12 +41,9 @@ public class MailgunEmailHandler extends EmailHandler {
     }
 
     private EmailResponse sendMailViaMailgun(EmailRequest emailRequest) {
-        RestTemplate restTemplate = getRestTemplate();
-
+        restTemplate = getRestTemplate();
         HttpEntity<MultiValueMap<String, String>> request = createHttpRequest(emailRequest);
-
         restTemplate.postForLocation(environmentProperty.getMailgunURI(), request);
-
         return createResponse();
     }
 
@@ -73,7 +76,7 @@ public class MailgunEmailHandler extends EmailHandler {
     }
 
     private RestTemplate getRestTemplate() {
-        RestTemplate restTemplate = restTemplateBuilder.build();
+        restTemplate = restTemplateBuilder.build();
         restTemplate.getInterceptors().add(
                 new BasicAuthorizationInterceptor(environmentProperty.getMailgunUser(),
                         environmentProperty.getMailgunKey()));

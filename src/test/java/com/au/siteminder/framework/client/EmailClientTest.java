@@ -1,8 +1,6 @@
 package com.au.siteminder.framework.client;
 
-import com.au.siteminder.framework.EnvironmentProperty;
 import com.au.siteminder.framework.exception.SiteminderServicesException;
-import com.au.siteminder.framework.handler.EmailHandler;
 import com.au.siteminder.framework.handler.MailgunEmailHandler;
 import com.au.siteminder.framework.handler.SendGridEmailHandler;
 import com.au.siteminder.model.EmailRequest;
@@ -14,7 +12,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,16 +20,10 @@ import static org.mockito.Mockito.when;
 public class EmailClientTest {
 
     @Mock
-    private RestTemplateBuilder restTemplateBuilder;
+    private MailgunEmailHandler mailgunEmailHandler;
 
     @Mock
-    private EnvironmentProperty environmentProperty;
-
-    @Mock
-    private EmailHandler emailHandler;
-
-    @Mock
-    private EmailHandler failoverHandler;
+    private SendGridEmailHandler sendGridEmailHandler;
 
     @InjectMocks
     private EmailClient emailClient;
@@ -41,16 +32,14 @@ public class EmailClientTest {
 
     @Before
     public void setup() {
-        emailHandler = new MailgunEmailHandler(environmentProperty, restTemplateBuilder);
-        failoverHandler = new SendGridEmailHandler(environmentProperty, restTemplateBuilder);
         MockitoAnnotations.initMocks(this);
-        emailClient.setEmailHandler(emailHandler);
+        emailClient.init();
         emailRequest = EmailRequestMother.build();
     }
 
     @Test
     public void whenSendEmailSucceeds() {
-        when(emailHandler.sendEmail(emailRequest)).thenReturn(EmailResponseMother.build());
+        when(mailgunEmailHandler.sendEmail(emailRequest)).thenReturn(EmailResponseMother.build());
         EmailResponse response = emailClient.sendEmail(emailRequest);
         assertNotNull(response);
         assertEquals(EmailResponseMother.STATUS, response.getStatus());
@@ -59,14 +48,7 @@ public class EmailClientTest {
 
     @Test(expected = SiteminderServicesException.class)
     public void whenSendEmailFails() {
-        when(emailHandler.sendEmail(emailRequest)).thenThrow(SiteminderServicesException.class);
-        emailClient.sendEmail(emailRequest);
-    }
-
-    @Test
-    public void testFailover(){
-        emailHandler.setNext(failoverHandler);
-        when(failoverHandler.sendEmail(emailRequest)).thenReturn(EmailResponseMother.build());
+        when(mailgunEmailHandler.sendEmail(emailRequest)).thenThrow(SiteminderServicesException.class);
         emailClient.sendEmail(emailRequest);
     }
 

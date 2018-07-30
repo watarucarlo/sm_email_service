@@ -9,10 +9,12 @@ import com.au.siteminder.model.sendgrid.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -20,12 +22,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class SendGridEmailHandler extends EmailHandler {
 
-    public SendGridEmailHandler(EnvironmentProperty environmentProperty, RestTemplateBuilder restTemplateBuilder) {
-        this.environmentProperty = environmentProperty;
-        this.restTemplateBuilder = restTemplateBuilder;
-    }
+    @Autowired
+    private EnvironmentProperty environmentProperty;
+
+    @Autowired
+    private RestTemplateBuilder restTemplateBuilder;
+
+    private RestTemplate restTemplate;
 
     public EmailResponse sendEmail(EmailRequest emailRequest) {
         try {
@@ -38,7 +44,7 @@ public class SendGridEmailHandler extends EmailHandler {
         }
     }
 
-    private SendGridRequest createSendGridRequest(EmailRequest emailRequest){
+    private SendGridRequest createSendGridRequest(EmailRequest emailRequest) {
         SendGridRequest sendGridRequest = new SendGridRequest();
         Content content = new Content("text/plain", emailRequest.getText());
         sendGridRequest.setContent(Collections.singletonList(content));
@@ -68,7 +74,7 @@ public class SendGridEmailHandler extends EmailHandler {
         return sendGridRequest;
     }
 
-    private String convertRequestToJson(SendGridRequest sendGridRequest){
+    private String convertRequestToJson(SendGridRequest sendGridRequest) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
@@ -86,7 +92,7 @@ public class SendGridEmailHandler extends EmailHandler {
         headers.set("Authorization", "Bearer " + environmentProperty.getSendGridKey());
 
         HttpEntity<String> entity = new HttpEntity<String>(convertRequestToJson(createSendGridRequest(emailRequest)), headers);
-        RestTemplate restTemplate = restTemplateBuilder.build();
+        restTemplate = restTemplateBuilder.build();
         restTemplate.postForLocation(environmentProperty.getSendGridURI(), entity);
 
         return createResponse();

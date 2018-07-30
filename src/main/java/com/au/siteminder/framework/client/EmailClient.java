@@ -12,23 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class EmailClient {
 
-    @Getter
-    @Setter
     private EmailHandler emailHandler;
 
     @Autowired
-    private RestTemplateBuilder restTemplateBuilder;
+    private MailgunEmailHandler mailgunEmailHandler;
 
     @Autowired
-    private EnvironmentProperty environmentProperty;
+    private SendGridEmailHandler sendGridEmailHandler;
 
-    public EmailClient(EnvironmentProperty environmentProperty, RestTemplateBuilder restTemplateBuilder) {
-        emailHandler = new MailgunEmailHandler(environmentProperty, restTemplateBuilder);
-        EmailHandler failoverHandler = new SendGridEmailHandler(environmentProperty, restTemplateBuilder);
-        emailHandler.setNext(failoverHandler);
+    @PostConstruct
+    public void init() {
+        emailHandler = sendGridEmailHandler;
+        emailHandler.setNext(mailgunEmailHandler);
     }
 
     public EmailResponse sendEmail(EmailRequest emailRequest) {
