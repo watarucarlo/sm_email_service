@@ -1,6 +1,7 @@
 package com.au.siteminder.framework.handler;
 
 import com.au.siteminder.framework.EnvironmentProperty;
+import com.au.siteminder.framework.encryption.JasyptEncrypter;
 import com.au.siteminder.framework.exception.SiteminderServicesException;
 import com.au.siteminder.model.EmailRequest;
 import com.au.siteminder.model.EmailResponse;
@@ -95,7 +96,7 @@ public class SendGridEmailHandler extends EmailHandler {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + environmentProperty.getSendGridKey());
+        headers.set("Authorization", "Bearer " + JasyptEncrypter.decrypt(environmentProperty.getSendGridKey()));
 
         HttpEntity<String> entity = new HttpEntity<String>(convertRequestToJson(createSendGridRequest(emailRequest)), headers);
         restTemplate = restTemplateBuilder.build();
