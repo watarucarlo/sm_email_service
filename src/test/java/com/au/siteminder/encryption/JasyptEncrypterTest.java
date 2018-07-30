@@ -7,7 +7,7 @@ import org.junit.Test;
 public class JasyptEncrypterTest {
 
     private static final String KEY = "randomness17==";
-    private static final String YOUR_KEY = "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";
+    private static final String YOUR_KEY = "put_your_key_here";
 
     @Test
     public void testEncryption(){
