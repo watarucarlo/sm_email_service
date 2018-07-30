@@ -9,6 +9,8 @@ import com.au.siteminder.model.sendgrid.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 @Component
 public class SendGridEmailHandler extends EmailHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(SendGridEmailHandler.class);
+
     @Autowired
     private EnvironmentProperty environmentProperty;
 
@@ -38,6 +42,7 @@ public class SendGridEmailHandler extends EmailHandler {
             return sendMailViaSendGrid(emailRequest);
         } catch (Exception e) {
             if (next == null) {
+                log.error("Email providers are not available");
                 throw new SiteminderServicesException("Email providers not available");
             }
             return next.sendEmail(emailRequest);
@@ -81,7 +86,8 @@ public class SendGridEmailHandler extends EmailHandler {
         try {
             return objectMapper.writeValueAsString(sendGridRequest);
         } catch (Exception e) {
-            throw new SiteminderServicesException("Failed to parse request to json.");
+            log.error("Failed to parse request to json.", e);
+            throw new SiteminderServicesException("Failed to parse request to json.", e);
         }
     }
 
@@ -93,8 +99,14 @@ public class SendGridEmailHandler extends EmailHandler {
 
         HttpEntity<String> entity = new HttpEntity<String>(convertRequestToJson(createSendGridRequest(emailRequest)), headers);
         restTemplate = restTemplateBuilder.build();
-        restTemplate.postForLocation(environmentProperty.getSendGridURI(), entity);
-
+        log.info("Sending email via sendgrid...");
+        try {
+            restTemplate.postForLocation(environmentProperty.getSendGridURI(), entity);
+        } catch (Exception e) {
+            log.error("Failed to send email via sendgrid...", e);
+            throw new SiteminderServicesException("Failed to send email via sendgrid...", e);
+        }
+        log.info("Successfully sent email via sendgrid...");
         return createResponse();
     }
 
