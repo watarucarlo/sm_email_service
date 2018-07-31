@@ -1,4 +1,4 @@
-# Project Title
+# Email Service
 
 This is an email service that is using third-party email providers to send emails. It is currently supporting two email providers (Mailgun and Sendgrid).
 
