@@ -1,6 +1,7 @@
 package com.au.siteminder.framework.handler;
 
 import com.au.siteminder.framework.EnvironmentProperty;
+import com.au.siteminder.framework.encryption.JasyptEncrypter;
 import com.au.siteminder.framework.exception.SiteminderServicesException;
 import com.au.siteminder.model.EmailRequest;
 import com.au.siteminder.model.EmailResponse;
@@ -118,7 +119,7 @@ public class MailgunEmailHandler extends EmailHandler {
         //Add authorization headers
         restTemplate.getInterceptors().add(
                 new BasicAuthorizationInterceptor(environmentProperty.getMailgunUser(),
-                        environmentProperty.getMailgunKey()));
+                        JasyptEncrypter.decrypt(environmentProperty.getMailgunKey())));
         restTemplate.getInterceptors().add((request, body, execution) -> {
             ClientHttpResponse response = execution.execute(request, body);
             response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
