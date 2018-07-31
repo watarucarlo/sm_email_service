@@ -7,6 +7,8 @@ import org.junit.Test;
 public class JasyptEncrypterTest {
 
     private static final String KEY = "randomness17==";
+
+    //Edit this with the sensitive information that you want to encrypt
     private static final String YOUR_KEY = "put_your_key_here";
 
     @Test

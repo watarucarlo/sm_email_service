@@ -6,6 +6,10 @@ import lombok.Setter;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
+/**
+ * Object used to mimic the structure of the request object used by sendgrid
+ *
+ */
 public class SendGridRequest {
 
     @Getter

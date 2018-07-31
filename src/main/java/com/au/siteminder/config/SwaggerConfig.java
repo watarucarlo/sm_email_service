@@ -31,7 +31,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "SiteMinder Email Service",
-                "Service endpoints for email base service",
+                "Base service used for sending email",
                 "0.0.1",
                 "Terms of service",
                 new Contact("Wataru Nakayama", "https://github.com/watarucarlo/sm_email_service/", "watarucnakayama@gmail.com"),

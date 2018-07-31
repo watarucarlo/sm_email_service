@@ -5,7 +5,7 @@
 
     <groupId>com.au.siteminder</groupId>
     <artifactId>sm_email_service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>sm_email_service</name>

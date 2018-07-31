@@ -5,6 +5,9 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import static com.au.siteminder.framework.constant.SiteminderEmailServiceConstant.ENCRYPTION_ALGORITHM;
 import static com.au.siteminder.framework.constant.SiteminderEmailServiceConstant.ENCRYPTION_KEY;
 
+/**
+ * Provides facility to encrypt and decrypt sensitive information
+ */
 public class JasyptEncrypter {
 
     public static String encrypt(String key) {
