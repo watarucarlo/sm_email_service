@@ -8,6 +8,10 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Exception class used for validation errors
+ *
+ */
 public class ServiceValidationException extends RuntimeException {
 
     @Getter

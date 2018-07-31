@@ -6,6 +6,10 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Request object for sending emails. Note that this only supports plain text messages and no attachments
+ *
+ */
 public class EmailRequest implements Serializable {
 
     private static final long serialVersionUID = 2359312660372242694L;

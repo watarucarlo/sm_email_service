@@ -13,16 +13,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Validator class used for email related validations
+ */
 @Component
 public class EmailServiceValidator extends ServiceValidator {
 
     private static final String EMAIL_REQUEST = "email_request";
 
+    /**
+     * Main validator method
+     *
+     * @param request
+     */
     public static void validate(EmailRequest request) {
         List<ValidationError> errors = new ArrayList<>();
         checkMandatory(errors, EMAIL_REQUEST, request);
 
         if (request != null) {
+            //Some email providers are checking both from and text field. These two should not be null
             checkMandatoryString(errors, EmailRequest.FROM, request.getFrom());
             checkMandatoryString(errors, EmailRequest.TEXT, request.getText());
             if (StringUtils.isNotBlank(request.getFrom())) {
@@ -34,6 +43,12 @@ public class EmailServiceValidator extends ServiceValidator {
     }
 
 
+    /**
+     * Method used to validate recipients (to, cc, and bcc)
+     *
+     * @param errors
+     * @param request
+     */
     private static void validateRecipients(List<ValidationError> errors, EmailRequest request) {
         if (CollectionUtils.isEmpty(request.getTo())) {
             errors.add(new ValidationError(EmailRequest.TO, ValidationErrorMessage.REQUIRED));
@@ -42,9 +57,16 @@ public class EmailServiceValidator extends ServiceValidator {
         }
     }
 
+    /**
+     * Checks whether there are duplicate email addresses across the to, cc, and bcc lists
+     *
+     * @param errors
+     * @param request
+     */
     private static void validateDuplicates(List<ValidationError> errors, EmailRequest request) {
         Set<String> recipients = new HashSet<>();
 
+        //Add each email to recipients list to get the unique set of emails
         recipients.addAll(validateDuplicates(errors, request.getTo(), recipients));
         recipients.addAll(validateDuplicates(errors, request.getCc(), recipients));
         recipients.addAll(validateDuplicates(errors, request.getBcc(), recipients));
@@ -61,6 +83,7 @@ public class EmailServiceValidator extends ServiceValidator {
         if (CollectionUtils.isNotEmpty(recipientList)) {
             for (String email : recipientList) {
                 boolean accepted = recipients.add(email);
+                //Adding a duplicate to a set would return false
                 if (!accepted) {
                     errors.add(new ValidationError(email, ValidationErrorMessage.DUPLICATE));
                 }

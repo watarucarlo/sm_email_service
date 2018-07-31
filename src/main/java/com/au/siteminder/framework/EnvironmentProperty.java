@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import static com.au.siteminder.framework.constant.SiteminderEmailServiceConstant.*;
 
+/**
+ * Component class used to retrieve system variables
+ */
 @Component
 public class EnvironmentProperty {
 

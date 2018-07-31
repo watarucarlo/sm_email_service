@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Handler class for sending email via SendGrid
+ */
 @Component
 public class SendGridEmailHandler extends EmailHandler {
 
@@ -49,6 +52,12 @@ public class SendGridEmailHandler extends EmailHandler {
         }
     }
 
+    /**
+     * Converts EmailRequest to SendGridRequest
+     *
+     * @param emailRequest
+     * @return
+     */
     private SendGridRequest createSendGridRequest(EmailRequest emailRequest) {
         SendGridRequest sendGridRequest = new SendGridRequest();
         Content content = new Content("text/plain", emailRequest.getText());
@@ -79,6 +88,12 @@ public class SendGridEmailHandler extends EmailHandler {
         return sendGridRequest;
     }
 
+    /**
+     * Converts the SendGridRequest object to a json format that is being used by SendGrid api
+     *
+     * @param sendGridRequest
+     * @return jsonString
+     */
     private String convertRequestToJson(SendGridRequest sendGridRequest) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -91,12 +106,20 @@ public class SendGridEmailHandler extends EmailHandler {
         }
     }
 
+    /**
+     * Uses the http client to send the request to SendGrid api
+     *
+     * @param emailRequest
+     * @return emailResponse
+     */
     private EmailResponse sendMailViaSendGrid(EmailRequest emailRequest) {
 
+        //Add authorization headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + environmentProperty.getSendGridKey());
 
+        //Build our http request object
         HttpEntity<String> entity = new HttpEntity<String>(convertRequestToJson(createSendGridRequest(emailRequest)), headers);
         restTemplate = restTemplateBuilder.build();
         log.info("Sending email via sendgrid...");
@@ -110,6 +133,11 @@ public class SendGridEmailHandler extends EmailHandler {
         return createResponse();
     }
 
+    /**
+     * Creates an email response object
+     *
+     * @return EmailResponse
+     */
     private EmailResponse createResponse() {
         EmailResponse emailResponse = new EmailResponse();
         emailResponse.setStatus(StatusEnum.SUCCESS);

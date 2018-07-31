@@ -1,5 +1,9 @@
 package com.au.siteminder.framework.constant;
 
+/**
+ * Constants used by the application
+ *
+ */
 public interface SiteminderEmailServiceConstant {
 
     String MAILGUN_USER_PROPERTY = "MAILGUN_USER";

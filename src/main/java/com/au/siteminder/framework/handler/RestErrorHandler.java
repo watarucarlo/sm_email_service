@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Handler class to convert exceptions to a json response
+ */
 @ControllerAdvice
 public class RestErrorHandler {
 

@@ -1,19 +1,19 @@
 package com.au.siteminder.framework.client;
 
-import com.au.siteminder.framework.EnvironmentProperty;
 import com.au.siteminder.framework.handler.EmailHandler;
 import com.au.siteminder.framework.handler.MailgunEmailHandler;
 import com.au.siteminder.framework.handler.SendGridEmailHandler;
 import com.au.siteminder.model.EmailRequest;
 import com.au.siteminder.model.EmailResponse;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * Client that simulates the chain of responsibility pattern using email handlers
+ *
+ */
 @Component
 public class EmailClient {
 

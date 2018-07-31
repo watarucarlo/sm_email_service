@@ -1,13 +1,15 @@
 package com.au.siteminder.controller;
 
 
-import com.au.siteminder.framework.exception.SiteminderServicesException;
 import com.au.siteminder.model.EmailRequest;
 import com.au.siteminder.model.EmailResponse;
 import com.au.siteminder.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Main controller used by the email microservice.
+ */
 @RestController
 public class EmailController {
 

@@ -20,6 +20,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Handler class used to send emails using Mailgun api
+ */
 @Component
 public class MailgunEmailHandler extends EmailHandler {
 
@@ -33,6 +36,12 @@ public class MailgunEmailHandler extends EmailHandler {
 
     private RestTemplate restTemplate;
 
+    /**
+     * Method used to send emails via mailgun
+     *
+     * @param emailRequest
+     * @return emailResponse
+     */
     public EmailResponse sendEmail(EmailRequest emailRequest) {
         try {
             return sendMailViaMailgun(emailRequest);
@@ -59,6 +68,12 @@ public class MailgunEmailHandler extends EmailHandler {
         return createResponse();
     }
 
+    /**
+     * Creates HttpEntity request object from an email request object
+     *
+     * @param emailRequest
+     * @return
+     */
     private HttpEntity<MultiValueMap<String, String>> createHttpRequest(EmailRequest emailRequest) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -80,6 +95,11 @@ public class MailgunEmailHandler extends EmailHandler {
         return new HttpEntity<>(map, headers);
     }
 
+    /**
+     * Creates an email response object
+     *
+     * @return
+     */
     private EmailResponse createResponse() {
         EmailResponse emailResponse = new EmailResponse();
         emailResponse.setStatus(StatusEnum.SUCCESS);
@@ -87,8 +107,15 @@ public class MailgunEmailHandler extends EmailHandler {
         return emailResponse;
     }
 
+    /**
+     * Creates a rest template and add necessary interceptors
+     *
+     * @return
+     */
     private RestTemplate getRestTemplate() {
         restTemplate = restTemplateBuilder.build();
+
+        //Add authorization headers
         restTemplate.getInterceptors().add(
                 new BasicAuthorizationInterceptor(environmentProperty.getMailgunUser(),
                         environmentProperty.getMailgunKey()));

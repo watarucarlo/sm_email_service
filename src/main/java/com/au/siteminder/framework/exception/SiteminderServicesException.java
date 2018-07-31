@@ -1,5 +1,8 @@
 package com.au.siteminder.framework.exception;
 
+/**
+ * Application level exception
+ */
 public class SiteminderServicesException extends RuntimeException {
 
     public SiteminderServicesException() {
